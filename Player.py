@@ -20,9 +20,6 @@ class Player:
             for j in range(self.game.size):
                 if self.game.get_cell_by_axis(i, j).val == self.role:
                     counter+=1
-                else:
-                    counter=0
-                    break
             if counter==self.game.size:
                 return True
                 
@@ -43,14 +40,13 @@ class Player:
         for i in range(self.game.size):
             if self.game.get_cell_by_axis(i, i).val == self.role:
                 counter1+=1
-                if counter1==self.game.size:
-                    return True
-            for j in range((self.game.size)-1,-1,-1):
-                if self.game.get_cell_by_axis(i, j).val == self.role:
-                    counter2+=1
-                elif self.game.get_cell_by_axis(i, j).val!=self.role:
-                    break
+            if self.game.get_cell_by_axis(4-i,i).val == self.role:
+                counter2+=1
+           
+                
         if counter1 == self.game.size or counter2 == self.game.size:
+            print(counter1)
+            print(counter2)
             return True
         return False
 

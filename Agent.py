@@ -5,6 +5,5 @@ class Agent:
         self.turn = turn
         self.game=game
 
-    #def play():
 
 

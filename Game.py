@@ -36,18 +36,18 @@ class Game:
             self.heading.configure(text="Congratulations! "+self.players[0].role + " won!")
             self.end =True
             if MsgBox().trigger(self.players[0]):
-                Game(self.frame,self.root,self.heading)
+                Game(self.frame,self.root,self.heading,self.size)
         elif self.players[1].isWon():
             self.heading.configure(text="Congratulations! "+self.players[1].role + " won!")
             self.end =True
             if MsgBox().trigger(self.players[1]):
-                Game(self.frame,self.root,self.heading)
+                Game(self.frame,self.root,self.heading,self.size)
 
         elif self.unmarked_cell ==0 : 
             self.heading.configure(text="It's a Draw! Better Luck next time")
             self.end =True
             if MsgBox().trigger():
-                Game(self.frame,self.root,self.heading)
+                Game(self.frame,self.root,self.heading,self.size)
 
         else: return  self.end 
 
