@@ -18,7 +18,7 @@ class Cell:
         #big_font
         btn = Button(
             location,
-            #bg='#042028',
+            bg='#042028',
             width = 7,
             height = 3,
             font=("Arial",25,"bold")
