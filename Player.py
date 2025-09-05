@@ -1,4 +1,5 @@
-from Cell import Cell
+GRID_SIZE=5
+
 class Player:
     def __init__ (self,role,turn,game):
         self.role = role
@@ -6,21 +7,51 @@ class Player:
         self.game = game
 
     def isWon(self):
-        if self.isWon_row_col():
+        if self.isWon_row()==True or self.isWon_col()==True or self.isWon_diag()==True:
             return True
-        elif self.game.get_cell_by_axis(0, 0).val == self.role and self.game.get_cell_by_axis(1, 1).val == self.role and self.game.get_cell_by_axis(2, 2).val == self.role:
-            return True
-        elif self.game.get_cell_by_axis(0, 2).val == self.role and self.game.get_cell_by_axis(1, 1).val == self.role and self.game.get_cell_by_axis(2, 0).val == self.role:
-            return True
+       
         return False
         
         
-    def isWon_row_col(self):
-        for i in range(3):
-            if self.game.get_cell_by_axis(i, 0).val == self.role and self.game.get_cell_by_axis(i, 1).val == self.role and self.game.get_cell_by_axis(i, 2).val == self.role:
+    def isWon_row(self):
+        for i in range(self.game.size):
+            counter=0
+
+            for j in range(self.game.size):
+                if self.game.get_cell_by_axis(i, j).val == self.role:
+                    counter+=1
+                else:
+                    counter=0
+                    break
+            if counter==self.game.size:
                 return True
-            elif self.game.get_cell_by_axis(0, i).val == self.role and self.game.get_cell_by_axis(1, i).val == self.role and self.game.get_cell_by_axis(2, i).val == self.role:
+                
+        return False
+    
+    def isWon_col(self):
+        for i in range(self.game.size):
+            counter=0
+            for j in range(self.game.size):
+                if self.game.get_cell_by_axis(j, i).val == self.role:
+                    counter+=1
+            if counter==self.game.size:
                 return True
+        return False
+    def isWon_diag(self):
+        counter1 =0
+        counter2=0
+        for i in range(self.game.size):
+            if self.game.get_cell_by_axis(i, i).val == self.role:
+                counter1+=1
+                if counter1==self.game.size:
+                    return True
+            for j in range((self.game.size)-1,-1,-1):
+                if self.game.get_cell_by_axis(i, j).val == self.role:
+                    counter2+=1
+                elif self.game.get_cell_by_axis(i, j).val!=self.role:
+                    break
+        if counter1 == self.game.size or counter2 == self.game.size:
+            return True
         return False
 
             

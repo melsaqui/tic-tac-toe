@@ -1,13 +1,6 @@
 
 from tkinter import *
-#from Game import Game
-
-#import settings
-import ctypes
-import sys
-import os
 class Cell:
-   
     def __init__ (self,x,y,game,val=""):
         self.x = x
         self.y = y
@@ -15,14 +8,21 @@ class Cell:
         self.game =game
     
     def create_btn_object (self,location,root):
-        #big_font
+        if self.game.size==5:
+            width = 3
+            height = 1
+            
+        elif self.game.size==3:
+            width = 5
+            height = 2
         btn = Button(
             location,
             bg='#042028',
-            width = 7,
-            height = 3,
-            font=("Arial",25,"bold")
+            width = width,
+            height = height,
+            font=("Arial",31,"bold")
         )
+       
         self.root =root
 
         btn.bind('<Button-1>',self.left_click)
