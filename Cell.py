@@ -19,9 +19,9 @@ class Cell:
         btn = Button(
             location,
             #bg='#042028',
-            width = 12,
-            height = 6,
-            font=("Arial",16,"bold")
+            width = 7,
+            height = 3,
+            font=("Arial",25,"bold")
         )
         self.root =root
 
@@ -30,7 +30,10 @@ class Cell:
         self.cell_btn_object = btn
     def left_click(self,e):
         if self.val=="" and not self.game.end:
-            self.cell_btn_object.config(text =self.game.playing.role, state=DISABLED)
+            if self.game.playing.role == "X":
+                self.cell_btn_object.config(text =self.game.playing.role,fg="red")
+            else:self.cell_btn_object.config(text =self.game.playing.role,fg="blue")
+
             self.val = self.game.playing.role
             self.game.unmarked_cell -=1
             if self.game.is_end()==False:
