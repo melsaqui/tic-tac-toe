@@ -8,9 +8,7 @@ import ctypes
 import sys
 import os
 class Cell:
-    cell_count = 9
-    unmarked_cell=9
-    all = []
+   
     def __init__ (self,x,y,game,val=""):
         self.x = x
         self.y = y
@@ -31,9 +29,13 @@ class Cell:
 
         self.cell_btn_object = btn
     def left_click(self,e):
-        self.cell_btn_object.config(text =self.game.playing.role, state=DISABLED)
-        self.game.updateTurns()
-   
+        if self.val=="" and not self.game.is_end():
+            self.cell_btn_object.config(text =self.game.playing.role, state=DISABLED)
+            self.val = self.game.playing.role
+            self.game.unmarked_cell -=1
+            if not self.game.is_end():
+                self.game.updateTurns()
+            
     def __repr__(self):
         return f"cell({self.x},{self.y})"
         

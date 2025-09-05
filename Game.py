@@ -4,9 +4,12 @@ from Player import Player
 class Game:
     players =[]
     cells =[]
+    cell_count = 9
+    unmarked_cell=9
+    all = []
     def __init__ (self,frame,root):
-        self.players.append(Player("X",True))
-        self.players.append(Player("O",False))
+        self.players.append(Player("X",True,self))
+        self.players.append(Player("O",False,self))
         self.frame=frame
         self.root =root
         self.init_cells()
@@ -19,6 +22,19 @@ class Game:
                 self.cells.append(c)
                 c.create_btn_object(self.frame,self.root)
                 c.cell_btn_object.grid(column = i, row = j)
+    def is_end(self):
+        if self.players[0].isWon():
+            print(self.players[0].role + " won")
+            return True
+        elif self.players[1].isWon():
+            print(self.players[1].role + " won")
+            return True
+        elif self.unmarked_cell ==0 : 
+            print("Its a draw")
+            return True
+        else: return False
+        
+            
 
     def updateTurns(self):
         if self.players[0].turn==True:
