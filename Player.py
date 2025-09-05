@@ -10,7 +10,7 @@ class Player:
             return True
         elif self.game.get_cell_by_axis(0, 0).val == self.role and self.game.get_cell_by_axis(1, 1).val == self.role and self.game.get_cell_by_axis(2, 2).val == self.role:
             return True
-        elif self.game.get_cell_by_axis(0, 2).val == self.role and self.game.get_cell_by_axis(1, 1).val == self.role and self.game.get_cell_by_axis(2, 1).val == self.role:
+        elif self.game.get_cell_by_axis(0, 2).val == self.role and self.game.get_cell_by_axis(1, 1).val == self.role and self.game.get_cell_by_axis(2, 0).val == self.role:
             return True
         return False
         

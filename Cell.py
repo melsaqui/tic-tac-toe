@@ -3,7 +3,6 @@ from tkinter import *
 #from Game import Game
 
 #import settings
-import random
 import ctypes
 import sys
 import os
@@ -16,12 +15,13 @@ class Cell:
         self.game =game
     
     def create_btn_object (self,location,root):
+        #big_font
         btn = Button(
             location,
             #bg='#042028',
-            width = 15,
-            height = 7,
-            #image=default
+            width = 12,
+            height = 6,
+            font=("Arial",16,"bold")
         )
         self.root =root
 
@@ -29,11 +29,11 @@ class Cell:
 
         self.cell_btn_object = btn
     def left_click(self,e):
-        if self.val=="" and not self.game.is_end():
+        if self.val=="" and not self.game.end:
             self.cell_btn_object.config(text =self.game.playing.role, state=DISABLED)
             self.val = self.game.playing.role
             self.game.unmarked_cell -=1
-            if not self.game.is_end():
+            if self.game.is_end()==False:
                 self.game.updateTurns()
             
     def __repr__(self):
