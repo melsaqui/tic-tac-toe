@@ -15,11 +15,11 @@ class Game:
   
         self.all = []
         self.auto=auto
-        self.players.append(Player("X",True,self))
+        self.players.append(Player("O",True,self))
         if not auto:
-            self.players.append(Player("O",False,self))
+            self.players.append(Player("X",False,self))
         elif auto:
-            self.players.append(Computer("O",False,self,self.players[0]))
+            self.players.append(Computer("X",False,self))
 
         self.frame=frame
         self.root =root
@@ -28,7 +28,6 @@ class Game:
         self.playing =self.players[0]
         self.heading=heading
         self.heading.configure(text="Player "+self.players[0].role+"\'s turn")
-
     def init_cells(self):
         for i in range (self.size):
             for j in range (self.size):
@@ -68,14 +67,11 @@ class Game:
 
             self.players[1].turn=False
             self.playing=self.players[0]
-
         if self.playing.__class__.__name__ =="Computer":
+            print("computer")
             self.playing.move()
-            
-
 
     def get_cell_by_axis(self, x, y):
-        #return a cell object based on x, y
          for cell in self.cells:
              if cell.x == x and cell.y == y:
                  return cell

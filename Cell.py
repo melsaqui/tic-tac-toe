@@ -42,6 +42,7 @@ class Cell:
         self.game.unmarked_cell -=1
         if self.game.is_end()==False:
             self.game.updateTurns()
+           
 
     def __repr__(self):
         return f"cell({self.x},{self.y})"
