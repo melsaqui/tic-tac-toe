@@ -1,10 +1,11 @@
 from Cell import Cell
 from Player import Player
+from Computer import Computer
 from MsgBox import MsgBox
 
 class Game:
     
-    def __init__ (self,frame,root,heading,size):
+    def __init__ (self,frame,root,heading,size, auto=False):
         self.cell_count = size**2
         self.unmarked_cell= size**2
         self.end=False
@@ -13,9 +14,13 @@ class Game:
         self.cells =[]
   
         self.all = []
-
+        self.auto=auto
         self.players.append(Player("X",True,self))
-        self.players.append(Player("O",False,self))
+        if not auto:
+            self.players.append(Player("O",False,self))
+        elif auto:
+            self.players.append(Computer("O",False,self,self.players[0]))
+
         self.frame=frame
         self.root =root
         
@@ -36,18 +41,18 @@ class Game:
             self.heading.configure(text="Congratulations! "+self.players[0].role + " won!")
             self.end =True
             if MsgBox().trigger(self.players[0]):
-                Game(self.frame,self.root,self.heading,self.size)
+                Game(self.frame,self.root,self.heading,self.size,self.auto)
         elif self.players[1].isWon():
             self.heading.configure(text="Congratulations! "+self.players[1].role + " won!")
             self.end =True
             if MsgBox().trigger(self.players[1]):
-                Game(self.frame,self.root,self.heading,self.size)
+                Game(self.frame,self.root,self.heading,self.size,self.auto)
 
         elif self.unmarked_cell ==0 : 
             self.heading.configure(text="It's a Draw! Better Luck next time")
             self.end =True
             if MsgBox().trigger():
-                Game(self.frame,self.root,self.heading,self.size)
+                Game(self.frame,self.root,self.heading,self.size,self.auto)
 
         else: return  self.end 
 
@@ -63,6 +68,11 @@ class Game:
 
             self.players[1].turn=False
             self.playing=self.players[0]
+
+        if self.playing.__class__.__name__ =="Computer":
+            self.playing.move()
+            
+
 
     def get_cell_by_axis(self, x, y):
         #return a cell object based on x, y

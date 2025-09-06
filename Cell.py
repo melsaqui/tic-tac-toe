@@ -30,15 +30,19 @@ class Cell:
         self.cell_btn_object = btn
     def left_click(self,e):
         if self.val=="" and not self.game.end:
-            if self.game.playing.role == "X":
-                self.cell_btn_object.config(text =self.game.playing.role,fg="red")
-            else:self.cell_btn_object.config(text =self.game.playing.role,fg="blue")
-
-            self.val = self.game.playing.role
-            self.game.unmarked_cell -=1
-            if self.game.is_end()==False:
-                self.game.updateTurns()
+            self.mark_cell()
+   
             
+    def mark_cell(self):
+        if self.game.playing.role == "X":
+            self.cell_btn_object.config(text =self.game.playing.role,fg="red")
+        else:
+            self.cell_btn_object.config(text =self.game.playing.role,fg="blue")
+        self.val = self.game.playing.role
+        self.game.unmarked_cell -=1
+        if self.game.is_end()==False:
+            self.game.updateTurns()
+
     def __repr__(self):
         return f"cell({self.x},{self.y})"
         
