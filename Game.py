@@ -19,7 +19,7 @@ class Game:
         if not auto:
             self.players.append(Player("X",False,self))
         elif auto:
-            self.players.append(Computer("X",False,self))
+            self.players.append(Computer("X",False,self,self.players[0]))
 
         self.frame=frame
         self.root =root
@@ -67,8 +67,8 @@ class Game:
 
             self.players[1].turn=False
             self.playing=self.players[0]
+            
         if self.playing.__class__.__name__ =="Computer":
-            print("computer")
             self.playing.move()
 
     def get_cell_by_axis(self, x, y):

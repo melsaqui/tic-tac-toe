@@ -1,6 +1,7 @@
 from tkinter import*
 from Cell import Cell
 from Game import Game
+
 class View:
     root = Tk()
 
