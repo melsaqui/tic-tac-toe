@@ -1,9 +1,6 @@
-GRID_SIZE=5
-
 class Player:
-    def __init__ (self,role,turn,game):
+    def __init__ (self,role,game):
         self.role = role
-        self.turn =turn
         self.game = game
 
     def isWon(self):
