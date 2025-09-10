@@ -24,17 +24,7 @@ class Player:
             if counter_col==self.game.size or counter_row==self.game.size or counter_diag1==self.game.size or counter_diag2==self.game.size:
                 return True
         return False
-    def isWon_diag(self):
-        counter1 =0
-        counter2=0
-        for i in range(self.game.size):
-            if self.game.get_cell_by_axis(i, i).val == self.role:
-                counter1+=1
-            if self.game.get_cell_by_axis(self.game.size-1-i,i).val == self.role:
-                counter2+=1                      
-        if counter1 == self.game.size or counter2 == self.game.size:
-            return True
-        return False
+   
 
             
 
