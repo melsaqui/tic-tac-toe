@@ -3,6 +3,7 @@ from Player import Player
 from Computer import Computer
 from MsgBox import MsgBox
 import random
+import time
 
 class Game:
     
@@ -88,6 +89,7 @@ class Game:
             self.playing=self.players[0]
 
         if self.playing.__class__.__name__ =="Computer":
+            time.sleep(5)            
             self.playing.move()
 
     def get_cell_by_axis(self, x, y):
