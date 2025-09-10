@@ -29,7 +29,7 @@ class Cell:
 
         self.cell_btn_object = btn
     def left_click(self,e):
-        if self.val=="" and not self.game.end:
+        if self.val=="" and not self.game.end and self.game.playing.__class__.__name__ !="Computer":
             self.mark_cell()
    
             

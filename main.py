@@ -9,7 +9,10 @@ class View:
         self.root.geometry('450x460')
         self.root.title("Tic-Tac-Toe")
         self.root.resizable(False,False)
-
+        self.menu()
+       
+        self.root.mainloop()
+    def menu(self):
         self.menu_frame=Frame(self.root, bg='#042028', width="400",height="400")
         btn_3_auto=Button(self.menu_frame,bg="#054456",fg="white",text="3x3 Single Player Game!",font=20, command=lambda: self.setup(size=3,auto=True))
         btn_3_auto.place(relx=0.5,rely=0.15,anchor=CENTER)
@@ -25,8 +28,6 @@ class View:
         btn_exit.place(relx=0.5,rely=0.75,anchor=CENTER)
 
         self.menu_frame.place(relx=0.5,rely=0.5,anchor=CENTER)
-        self.root.mainloop()
-
     def exit():
         sys.exit()
 
@@ -45,5 +46,5 @@ class View:
     def reset(self):
         self.game_frame.place_forget()
         self.header_frame.place_forget()
-        self.__init__()
+        self.menu()
 v=View()

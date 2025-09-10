@@ -20,16 +20,18 @@ class Game:
         self.auto=auto
         self.frame=frame
         self.root =root     
-        self.init_cells()
         self.heading=heading
-
-        if not auto:
+        self.init_cells()
+        self.players_setup()
+        self.heading.configure(text="Player "+self.playing.role+"\'s turn")
+    def players_setup(self):
+        if not self.auto:
             self.players.append(Player("O",self))
             self.players.append(Player("X",self))
             self.playing=self.players[0]
             self.players[0].turn=True
             self.players[1].turn=False
-        elif auto:
+        elif self.auto:
             self.players.append(Player(role="O",game=self))
             self.players.append(Computer(role="X",game=self,enemy=self.players[0]))
             rand=int(random.randint(0,1))
@@ -41,9 +43,6 @@ class Game:
                 self.players[1].turn=True
                 self.players[0].turn=False
                 self.players[1].move()
-
-        self.heading.configure(text="Player "+self.playing.role+"\'s turn")
-
     def init_cells(self):
         for i in range (self.size):
             for j in range (self.size):
@@ -78,19 +77,23 @@ class Game:
     def updateTurns(self):
         if self.players[0].turn==True:
             self.players[1].turn = True
-            self.heading.configure(text="Player "+self.players[1].role+"\'s turn")
+            if not self.auto:
+                self.heading.configure(text="Player "+self.players[1].role+"\'s turn")
             self.players[0].turn=False
             self.playing=self.players[1]
         else:
             self.players[0].turn=True
+            if not self.auto:
+                self.heading.configure(text="Player "+self.players[1].role+"\'s turn")
             self.heading.configure(text="Player "+self.players[0].role+"\'s turn")
 
             self.players[1].turn=False
             self.playing=self.players[0]
 
         if self.playing.__class__.__name__ =="Computer":
-            time.sleep(5)            
             self.playing.move()
+        else:
+             self.heading.configure(text="Your Turn!")
 
     def get_cell_by_axis(self, x, y):
          for cell in self.cells:
