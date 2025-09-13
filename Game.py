@@ -6,12 +6,14 @@ import random
 import time
 
 class Game:
-    
+    players =[]
+    cells =[]
     def __init__ (self,frame,root,heading,size, view,auto=False):
         self.cell_count = size**2
         self.unmarked_cell= size**2
         self.end=False
         self.size=size
+
         self.players =[]
         self.cells =[]
         self.all = []
@@ -23,7 +25,6 @@ class Game:
         self.heading=heading
         self.init_cells()
         self.players_setup()
-        self.heading.configure(text="Player "+self.playing.role+"\'s turn")
     def players_setup(self):
         if not self.auto:
             self.players.append(Player("O",self))
@@ -31,6 +32,8 @@ class Game:
             self.playing=self.players[0]
             self.players[0].turn=True
             self.players[1].turn=False
+            self.heading.configure(text="Player "+self.playing.role+"\'s turn")
+
         elif self.auto:
             self.players.append(Player(role="O",game=self))
             self.players.append(Computer(role="X",game=self,enemy=self.players[0]))
@@ -39,6 +42,8 @@ class Game:
             if self.playing==self.players[0]:
                 self.players[0].turn=True
                 self.players[1].turn=False
+                self.heading.configure(text="Your turn")
+
             else:
                 self.players[1].turn=True
                 self.players[0].turn=False
@@ -55,13 +60,17 @@ class Game:
             self.heading.configure(text="Congratulations! "+self.players[0].role + " won!")
             self.end =True
             if MsgBox().trigger(self.auto,self.players[0]):
-                Game(self.frame,self.root,self.heading,self.size,self.auto)
+                self.players=[]
+                self.cells=[]
+                self.__init__(self.frame,self.root,self.heading,self.size,self.auto)
             else: self.view.reset()
         elif self.players[1].isWon():
             self.heading.configure(text="Congratulations! "+self.players[1].role + " won!")
             self.end =True
             if MsgBox().trigger(self.auto,self.players[1]):
-                Game(self.frame,self.root,self.heading,self.size,self.auto)
+                self.players=[]
+                self.cells=[]                
+                self.__init__(self.frame,self.root,self.heading,self.size,self.auto)
             else:
                 self.view.reset()
 
@@ -69,7 +78,9 @@ class Game:
             self.heading.configure(text="It's a Draw! Better Luck next time")
             self.end =True
             if MsgBox().trigger(self.auto):
-                Game(self.frame,self.root,self.heading,self.size,self.auto)
+                self.players=[]
+                self.cells=[]
+                self.__init__(self.frame,self.root,self.heading,self.size,self.auto)
             else:
                 self.view.reset()
         else: return  self.end 
