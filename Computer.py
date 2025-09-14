@@ -223,7 +223,7 @@ class Computer(Player):
     def corners(self):
         size=self.game.size
         half_size =int(size/2)
-        center_cell=self.board_rep[half_size][half_size]#self.game.get_cell_by_axis(half_size,half_size)
+        center_cell=self.board_rep[half_size][half_size]
         corner1_cell=self.board_rep[0][0]
         corner2_cell =self.board_rep[size-1][0]
         corner3_cell =self.board_rep[0][size-1]
