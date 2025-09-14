@@ -4,6 +4,7 @@ from Computer import Computer
 from MsgBox import MsgBox
 import random
 import time
+import tkinter
 
 class Game:
     players =[]
@@ -16,7 +17,6 @@ class Game:
 
         self.players =[]
         self.cells =[]
-        self.all = []
         self.view=view
 
         self.auto=auto
@@ -50,11 +50,17 @@ class Game:
                 self.players[1].move()
     def init_cells(self):
         for i in range (self.size):
+            tkinter.Grid.rowconfigure(self.frame, i, weight=2)
+
             for j in range (self.size):
+                tkinter.Grid.columnconfigure(self.frame, j, weight=1)
+
                 c = (Cell(i,j,self))
                 self.cells.append(c)
                 c.create_btn_object(self.frame,self.root)
-                c.cell_btn_object.grid(column = i, row = j)
+
+                c.cell_btn_object.grid(column = i, row = j,sticky="NSEW",padx=1, pady=1)
+
     def is_end(self):
         if self.players[0].isWon():
             self.heading.configure(text="Congratulations! "+self.players[0].role + " won!")
@@ -67,10 +73,8 @@ class Game:
         elif self.players[1].isWon():
             self.heading.configure(text="Congratulations! "+self.players[1].role + " won!")
             self.end =True
-            if MsgBox().trigger(self.auto,self.players[1]):
-                self.players=[]
-                self.cells=[]                
-                self.__init__(self.frame,self.root,self.heading,self.size,self.auto)
+            if MsgBox().trigger(self.auto,self.players[1]):              
+                self.reset()
             else:
                 self.view.reset()
 
@@ -78,13 +82,18 @@ class Game:
             self.heading.configure(text="It's a Draw! Better Luck next time")
             self.end =True
             if MsgBox().trigger(self.auto):
-                self.players=[]
-                self.cells=[]
-                self.__init__(self.frame,self.root,self.heading,self.size,self.auto)
+                self.reset()
             else:
                 self.view.reset()
         else: return  self.end 
-
+    def reset(self):
+        self.end=False
+        del self.players
+        del self.cells
+        self.players =[]
+        self.cells =[]
+        self.init_cells()
+        self.players_setup()
     def updateTurns(self):
         if self.players[0].turn==True:
             self.players[1].turn = True
@@ -100,11 +109,11 @@ class Game:
 
             self.players[1].turn=False
             self.playing=self.players[0]
-
-        if self.playing.__class__.__name__ =="Computer":
-            self.playing.move()
-        else:
-             self.heading.configure(text="Your Turn!")
+        if self.auto:
+            if self.playing.__class__.__name__ =="Computer":
+                self.playing.move()
+            else:
+                self.heading.configure(text="Your Turn!")
 
     def get_cell_by_axis(self, x, y):
          for cell in self.cells:

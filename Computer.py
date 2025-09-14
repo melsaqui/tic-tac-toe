@@ -106,12 +106,12 @@ class Computer(Player):
       
         score = max(higher_col,higher_row,counter_diag2,counter_diag1)
         if score == self.game.size:
-            return self.game.size**5
+            return self.game.size*10000
         if score == self.game.size-1:
-            return score**3
+            return score*5000
         if score >= int(self.game.size/2) +1:
-            return score**2
-        return score
+            return score*300
+        return score*10
             
     hash_table={}
     
@@ -122,27 +122,28 @@ class Computer(Player):
         #    return self.hash_table[key]
         
         possible_moves=self.get_possible_moves(board)
-        win_score=self.game.size**5
-        one_away =(self.game.size-1)**3
+        win_score=self.game.size*10000
+        one_away =(self.game.size-1)*5000
         max_score= self.evaluate(board,self.role,self.enemy.role)
         min_score= self.evaluate(board,self.enemy.role,self.role)
         actual_enemy =self.evaluate(self.board_rep,self.enemy.role,self.role)
-        
+        actual =self.evaluate(self.board_rep,self.role,self.enemy.role)
+
         if max_score==win_score:
             if not (min_score==one_away):
                 self.stop_event.set() 
             return max_score-depth
         elif min_score==win_score:
             return depth-min_score
+        elif max_score==one_away:
+            return float("inf")
         elif min_score ==one_away:
-            return float("-inf")
+           return float("-inf")        
         elif len(possible_moves) ==0:
             return 0
-        
-        elif depth==max_depth and (actual_enemy==one_away) and len(possible_moves)!=0:
+        elif depth==max_depth and (actual_enemy==one_away or actual==one_away) and len(possible_moves)!=0:
             print(f"max depth changed: {max_depth}")
             max_depth+=1
-
         elif depth==max_depth:
             if max_score>min_score:
                 return max_score -depth
@@ -192,7 +193,7 @@ class Computer(Player):
         if self.stop_event.is_set():
             return
         board[move[1]][move[0]] = self.role
-        score= self.minimax(board,0,alpha,beta,True,5)
+        score= self.minimax(board,0,alpha,beta,True,6)
         
         board[move[1]][move[0]] = "_"
         with self.results_lock:
@@ -261,7 +262,7 @@ class Computer(Player):
         print(f"Current enemy score: {self.evaluate(self.board_rep,self.enemy.role,self.role)}")
 
         corner_move =self.corners()
-        if corner_move!=None:
+        if corner_move!=None and self.evaluate(self.board_rep,self.role,self.enemy.role)<(self.game.size-1)*5000:
             best_move=self.game.get_cell_by_axis(corner_move[0],corner_move[1])
         else:   
             possible_moves=self.get_possible_moves(self.board_rep)

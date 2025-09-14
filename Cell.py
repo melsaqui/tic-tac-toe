@@ -11,17 +11,23 @@ class Cell:
         if self.game.size==5:
             width = 3
             height = 1
-            
+            font=("Arial",29,"bold")
+        elif self.game.size==10:
+            width = 3
+            height = 1  
+            font=("Arial",13,"bold")
         elif self.game.size==3:
             width = 5
             height = 2
+            font=("Arial",31,"bold")
         btn = Button(
             location,
             bg='#042028',
             width = width,
             height = height,
-            font=("Arial",31,"bold")
+            font=font,
         )
+
        
         self.root =root
 
