@@ -52,8 +52,10 @@ class Computer(Player):
             for dy in [-1, 0, 1]:
                 nx, ny = x + dx, y + dy 
                 if 0 <= nx < size and 0 <= ny < size:
-                    if self.board_rep[ny][nx]!= "_":
+                    if self.board_rep[ny][nx]!= self.enemy.role:
                         score+=5
+                    if self.board_rep[ny][nx]!= self.role:
+                        score+=4
                     
         return score
     
@@ -125,26 +127,27 @@ class Computer(Player):
         max_score= self.evaluate(board,self.role,self.enemy.role)
         min_score= self.evaluate(board,self.enemy.role,self.role)
         actual_enemy =self.evaluate(self.board_rep,self.enemy.role,self.role)
-  
+        
         if max_score==win_score:
-           #self.terminal_found =True
-            self.stop_event.set() 
+            if not (min_score==one_away):
+                self.stop_event.set() 
             return max_score-depth
         elif min_score==win_score:
-            self.stop_event.set() 
             return depth-min_score
+        elif min_score ==one_away:
+            return float("-inf")
         elif len(possible_moves) ==0:
-            self.stop_event.set() 
             return 0
+        
         elif depth==max_depth and (actual_enemy==one_away) and len(possible_moves)!=0:
             print(f"max depth changed: {max_depth}")
             max_depth+=1
+
         elif depth==max_depth:
             if max_score>min_score:
                 return max_score -depth
             elif max_score<=min_score:
                 return depth-(min_score)
-            
         if self.stop_event.is_set():
             return float("-inf"),"aborted"
         if isMax:
@@ -153,35 +156,30 @@ class Computer(Player):
                 for move in possible_moves:
                     board[move[1]][move[0]]=self.role
                     score = self.minimax(board,depth + 1,alpha,beta,False,max_depth)
-                
                     board[move[1]][move[0]]="_"
-                    if not isinstance(score,tuple):
-                        best_score = max(score, best_score)
-                        alpha= max(best_score,alpha)
-                        if(beta<=alpha):
-                            break
-                    else: pass
-
+                    if isinstance(score,tuple) and score[1]=="aborted":
+                        continue
+                    best_score = max(score, best_score)
+                    alpha= max(best_score,alpha)
+                    if(beta<=alpha):
+                        break
                 #self.hash_table[key] = best_score
-                return best_score
+            return best_score
         elif not isMax:
             best_score = float("inf")
             if self.stop_event.is_set()==False:
-
                 for move in possible_moves:
                     board[move[1]][move[0]]=self.role
                     score = self.minimax(board,depth + 1,alpha,beta,True,max_depth)
                     board[move[1]][move[0]] = "_"
-                    if not isinstance(score,tuple):
-
-                        best_score = min(score, best_score)
-                        beta = min(best_score,beta)
-                        if(beta<=alpha):
-                            break
-                        return best_score
+                    if isinstance(score,tuple) and score[1]=="aborted":
+                        continue
+                    best_score = min(score, best_score)
+                    beta = min(best_score,beta)
+                    if(beta<=alpha):
+                        break
                 #self.hash_table[key] = best_score
-                    else: return score
-                #return best_score
+            return best_score
         
     score_move =[]
 
@@ -191,7 +189,6 @@ class Computer(Player):
     def get_best_move(self,move,board):
         alpha= float("-inf")
         beta= float("inf")
-            #return  
         if self.stop_event.is_set():
             return
         board[move[1]][move[0]] = self.role
@@ -199,8 +196,7 @@ class Computer(Player):
         
         board[move[1]][move[0]] = "_"
         with self.results_lock:
-            if not isinstance(score,list):
-                self.score_move.append([score,move])
+            self.score_move.append([score,move])
     
     def split_possible_move(self, possible_moves):  
         threads = []
@@ -214,15 +210,13 @@ class Computer(Player):
         for t in threads:
             t.join()
         best_score=float("-inf")
-        print("arr contents")
-        print(self.score_move)
         for score,move in self.score_move:
             if score!=None and best_score<score :
                 best_score=score
                 best_move=move
         print("Best move")
         print(best_move)
-        self.arr=[]
+        self.score_move=[]
         self.terminal_found =False
         return best_score,best_move
     def corners(self):
