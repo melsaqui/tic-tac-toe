@@ -94,7 +94,7 @@ class Game:
         self.cells =[]
         self.init_cells()
         self.players_setup()
-    def updateTurns(self):
+    def updateTurns(self,last_move):
         if self.players[0].turn==True:
             self.players[1].turn = True
             if not self.auto:
@@ -111,7 +111,8 @@ class Game:
             self.playing=self.players[0]
         if self.auto:
             if self.playing.__class__.__name__ =="Computer":
-                self.playing.move()
+                last_arr=[last_move.x,last_move.y]
+                self.playing.move(last_arr)
             else:
                 self.heading.configure(text="Your Turn!")
 
