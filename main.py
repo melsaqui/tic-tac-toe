@@ -8,7 +8,6 @@ class View:
         self.root.configure(bg='#1A1825')
         self.root.geometry('500x510')
         self.root.title("Tic-Tac-Toe")
-        #self.root.resizable(False,False)
         self.menu()
        
         self.root.mainloop()
