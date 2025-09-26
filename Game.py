@@ -4,7 +4,6 @@ from Computer import Computer
 from MsgBox import MsgBox
 import random
 import time
-import tkinter
 
 class Game:
     players =[]
@@ -23,7 +22,7 @@ class Game:
         self.frame=frame
         self.root =root     
         self.heading=heading
-        self.init_cells()
+        self.view.init_cells(self)
         self.players_setup()
     def players_setup(self):
         if not self.auto:
@@ -48,19 +47,7 @@ class Game:
                 self.players[1].turn=True
                 self.players[0].turn=False
                 self.players[1].move()
-    def init_cells(self):
-        for i in range (self.size):
-            tkinter.Grid.rowconfigure(self.frame, i, weight=2)
-
-            for j in range (self.size):
-                tkinter.Grid.columnconfigure(self.frame, j, weight=1)
-
-                c = (Cell(i,j,self))
-                self.cells.append(c)
-                c.create_btn_object(self.frame,self.root)
-
-                c.cell_btn_object.grid(column = i, row = j,sticky="NSEW",padx=1, pady=1)
-
+    
     def is_end(self):
         if self.players[0].isWon():
             self.heading.configure(text="Congratulations! "+self.players[0].role + " won!")
@@ -92,8 +79,8 @@ class Game:
         del self.cells
         self.players =[]
         self.cells =[]
-        self.init_cells()
-        self.players_setup()
+        Game(self.frame,self.root,self.heading,self.size,self.view,self.auto)
+        del self
     def updateTurns(self,last_move):
         if self.players[0].turn==True:
             self.players[1].turn = True

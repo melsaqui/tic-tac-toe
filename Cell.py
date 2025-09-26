@@ -28,7 +28,6 @@ class Cell:
             font=font,
         )
 
-       
         self.root =root
 
         btn.bind('<Button-1>',self.left_click)
@@ -38,7 +37,6 @@ class Cell:
         if self.val=="" and not self.game.end and self.game.playing.__class__.__name__ !="Computer":
             self.mark_cell()
    
-            
     def mark_cell(self):
         if self.game.playing.role == "X":
             self.cell_btn_object.config(text =self.game.playing.role,fg="red")

@@ -1,6 +1,8 @@
 from tkinter import*
 from Game import Game
+from Cell import Cell
 import sys
+import tkinter
 class View:
     root = Tk()
 
@@ -11,6 +13,7 @@ class View:
         self.menu()
        
         self.root.mainloop()
+
     def menu(self):
         self.menu_frame=Frame(self.root, bg='#042028', width="470",height="470")
         lbl_title=Label(self.menu_frame,bg="#054456",text="Tic-Tac-Toe",font=50,fg="white",width=400,pady=5)
@@ -18,14 +21,19 @@ class View:
 
         btn_3_auto=Button(self.menu_frame,bg="#054456",fg="white",text="3x3 Single Player!",width=17,font=15, command=lambda: self.setup(size=3,auto=True))
         btn_3_auto.place(relx=0.48,rely=0.3,anchor=E)
+
         btn_5_auto=Button(self.menu_frame,bg="#054456",fg="white",text="5x5 Single Player!" ,width=17,font=15, command=lambda: self.setup(size=5,auto=True))
         btn_5_auto.place(relx=0.48,rely=0.45,anchor=E)
+
         btn_10_auto=Button(self.menu_frame,bg="#054456",fg="white",text="10x10 Single Player!",width=17,font=20, command=lambda: self.setup(size=10,auto=True))
         btn_10_auto.place(relx=0.48,rely=0.6,anchor=E)
+
         btn_3_not_auto=Button(self.menu_frame,bg="#054456",fg="white",text="3x3 Multiplayer!",width=17,font=20, command=lambda: self.setup(size=3,auto=False))
         btn_3_not_auto.place(relx=0.52,rely=0.3,anchor=W)
+
         btn_5_not_auto=Button(self.menu_frame,bg="#054456",fg="white",text="5x5 Multiplayer!",width=17,font=20, command=lambda: self.setup(size=5,auto=False))
         btn_5_not_auto.place(relx=0.52,rely=0.45,anchor=W)
+        
         btn_10_not_auto=Button(self.menu_frame,bg="#054456",fg="white",text="10x10 Multiplayer!",width=17,font=20, command=lambda: self.setup(size=10,auto=False))
         btn_10_not_auto.place(relx=0.52,rely=0.6,anchor=W)
       
@@ -46,8 +54,18 @@ class View:
         self.header_frame.place(x=1,rely=0.01,relwidth=1, relheight=0.08)
         self.game_frame.place(relx=0.5, rely=0.55, relwidth=1, relheight=0.8,anchor=CENTER)
 
-        Game(self.game_frame,self.root,heading,size,self,auto)
-    
+        g=Game(self.game_frame,self.root,heading,size,self,auto)
+    def init_cells(self,game):
+        for i in range (game.size):
+            tkinter.Grid.rowconfigure(self.game_frame, i, weight=2)
+
+            for j in range (game.size):
+                tkinter.Grid.columnconfigure(self.game_frame, j, weight=1)
+                c = (Cell(i,j,game))
+                game.cells.append(c)
+                c.create_btn_object(self.game_frame,self.root)
+                c.cell_btn_object.grid(column = i, row = j,sticky="NSEW",padx=1, pady=1)
+
     def reset(self):
         self.game_frame.place_forget()
         self.header_frame.place_forget()

@@ -1,25 +1,24 @@
-
 from Player import Player
-from functools import lru_cache
 from threading import Thread
 from threading import Event
 from threading import Lock
-
 import copy
 import time
-
 class Computer(Player):
+    score_move = []
+    results_lock = Lock()
+    hash_table = {}
+    stop_event = Event()
+
+
     def __init__(self,role,game,enemy):
         super().__init__(role,game)
-        self.enemy=enemy
-        self.board_rep=[]
+        self.enemy = enemy
+        self.board_rep = []
 
     def get_possible_moves(self,board,radius=2):
-        possible_moves=[]
-        
-        #center
-        size=self.game.size
-
+        possible_moves = []
+        size = self.game.size
         for i in range(size):
             for j in range(size):
                 if board[j][i]!="_" :
@@ -38,6 +37,7 @@ class Computer(Player):
         )
         
         return possible_moves
+    
     def move_score_to_sort(self,cell):
         x=cell[0]
         y=cell[1]
@@ -53,8 +53,7 @@ class Computer(Player):
                 nx, ny = x + dx, y + dy 
                 if 0 <= nx < size and 0 <= ny < size:
                     if self.board_rep[ny][nx]!= "_":
-                        score+=5
-                    
+                        score+=5  
         return score
     
     def evaluate(self,board,role,enemy):
@@ -85,6 +84,7 @@ class Computer(Player):
                     stop_count_col=True
                 if stop_count_col and stop_count_row:
                     break
+
             if board[i][i]== role and not stop_count_diag1:
                 counter_diag1+=1
             elif board[i][i] == enemy:
@@ -112,10 +112,7 @@ class Computer(Player):
         elif score!=float("-inf"):
             return score*10
         return score
-            
-    hash_table={}
-    
-    #@lru_cache(maxsize=None)
+                
     def minimax(self,board,depth,alpha,beta,isMax,max_depth):
         key = (tuple(map(tuple, board)),depth,isMax)
         if key in self.hash_table:
@@ -153,7 +150,8 @@ class Computer(Player):
             elif not isMax:
                 return depth-(max_score)
         if self.stop_event.is_set():
-            return float("-inf"),"aborted"    
+            return float("-inf"),"aborted" 
+           
         if isMax:
             best_score =float("-inf")
             for move in possible_moves:
@@ -183,10 +181,6 @@ class Computer(Player):
                     break
             self.hash_table[key] = best_score
             return best_score
-        
-    score_move =[]
-
-    results_lock = Lock()
 
     def get_best_move(self,move,board):
         alpha= float("-inf")
@@ -199,7 +193,6 @@ class Computer(Player):
         with self.results_lock:
             self.score_move.append([score,move])
 
-    stop_event =Event()
     def split_possible_move(self, possible_moves):  
         threads = []
         self.stop_event.clear()
@@ -216,7 +209,6 @@ class Computer(Player):
         best_move =possible_moves[0]
         best_score=float("-inf")
         for score,move in self.score_move:
-           # print(score)
             if score!=None and best_score<score :
                 best_score=score
                 best_move=move
@@ -268,15 +260,6 @@ class Computer(Player):
                 for j in range(half_size-1,half_size+1):
                     if self.board_rep[i][j]=="_":
                         return j,i
-                    else:
-                        continue
-        
-        elif self.game.size>3:
-            for i in range(half_size-2):
-                if self.board_rep[i][i]=="_":
-                    return i,i
-                elif self.board_rep[i][half_size-1]=="_":
-                    return half_size-1,i
                
     def move_process(self,enemy_move=""):
         start_time = time.perf_counter()
@@ -290,27 +273,21 @@ class Computer(Player):
 
         self.current_enemy_score=self.evaluate(self.board_rep,self.enemy.role,self.role)
         self.current_score =self.evaluate(self.board_rep,self.role,self.enemy.role)
-        print(f"Current enemy score: {self.current_enemy_score}")
         corner_move =self.corners()
         if (corner_move!=None) and (self.current_enemy_score <(self.game.size-1)*5000): 
             best_move=self.game.get_cell_by_axis(corner_move[0],corner_move[1])
             self.board_rep[corner_move[1]][corner_move[0]] = self.role
-
-            print("corner move:")
-            print(best_move)
         else:   
             if self.current_score <(self.game.size-1)*5000 or self.current_enemy_score <(self.game.size-1)*5000:
                 radius=1
             else:
                 radius=2
             possible_moves=self.get_possible_moves(self.board_rep,radius)
-            print("Possible moves")
-            print (possible_moves)
             data=self.split_possible_move(possible_moves)
             move=data[1]
             best_move=self.game.get_cell_by_axis(move[0],move[1])
             self.board_rep[move[1]][move[0]] = self.role
-
+        #console representation
         for row in self.board_rep:
             print(row)
 
@@ -320,6 +297,7 @@ class Computer(Player):
         duration =end_time-start_time
         best_move=""
         print(f"processing time: {int(duration//3600)}h {int(duration//60)}m {duration%60}s")
+
     def get_board_rep(self):
         self.board_rep=[]
         for i in range(self.game.size):
