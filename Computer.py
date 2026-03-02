@@ -135,14 +135,14 @@ class Computer(Player):
         elif min_score==win_score:
             return depth-min_score
 
-       # elif max_score==one_away:
-       #    return float("inf")
+        elif max_score==one_away:
+            return float("inf")
         elif min_score ==one_away:
             return float("-inf")        
         elif len(possible_moves) ==0 or(min_score==float("-inf") and max_score==float("-inf")):
             return 0
         elif depth==max_depth and (min_score==one_away or max_score==one_away) and len(possible_moves)!=0:
-            print(f"max depth changed: {max_depth}")
+           # print(f"max depth changed: {max_depth}")
             max_depth+=1
         elif depth==max_depth:
             if isMax:
@@ -188,7 +188,7 @@ class Computer(Player):
         if self.stop_event.is_set():
             return
         board[move[1]][move[0]] = self.role 
-        score= self.minimax(board,0,alpha,beta,True,2)
+        score= self.minimax(board,0,alpha,beta,True,3)
         board[move[1]][move[0]] = "_"
         with self.results_lock:
             self.score_move.append([score,move])
