@@ -41,7 +41,8 @@ class Cell:
         if self.game.playing.role == "X":
             self.cell_btn_object.config(text =self.game.playing.role,fg="red")
         else:
-            self.cell_btn_object.config(text =self.game.playing.role,fg="blue")
+            self.cell_btn_object.config(text =self.game.playing.role,fg="#1E90FF")
+
         self.val = self.game.playing.role
         self.game.unmarked_cell -=1
         
