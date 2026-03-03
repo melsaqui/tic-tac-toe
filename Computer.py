@@ -114,7 +114,7 @@ class Computer(Player):
         return score
                 
     def minimax(self,board,depth,alpha,beta,isMax,max_depth):
-        key = (tuple(map(tuple, board)),depth,isMax)
+        key = (tuple(map(tuple, board)),max_depth-depth,isMax)
         if key in self.hash_table:
             return self.hash_table[key]
         win_score=self.game.size*10000
@@ -127,28 +127,17 @@ class Computer(Player):
         max_score= self.evaluate(board,self.role,self.enemy.role)
         min_score= self.evaluate(board,self.enemy.role,self.role)
 
-        if max_score==win_score: 
-            if not (min_score==one_away):
-                self.stop_event.set()
-            return max_score-depth
+        if max_score>=win_score: 
+            return win_score-depth
           
-        elif min_score==win_score:
-            return depth-min_score
-
-        elif max_score==one_away:
-            return float("inf")
-        elif min_score ==one_away:
-            return float("-inf")        
-        elif len(possible_moves) ==0 or(min_score==float("-inf") and max_score==float("-inf")):
+        elif min_score>=win_score:
+            return depth-win_score
+      
+        elif len(possible_moves) ==0:
             return 0
-        elif depth==max_depth and (min_score==one_away or max_score==one_away) and len(possible_moves)!=0:
-           # print(f"max depth changed: {max_depth}")
-            max_depth+=1
-        elif depth==max_depth:
+        elif depth>=max_depth:
             if isMax:
-                return max_score -depth
-            elif not isMax:
-                return depth-(max_score)
+                return max_score-(min_score*1.2) -depth
         if self.stop_event.is_set():
             return float("-inf"),"aborted" 
            
@@ -170,7 +159,7 @@ class Computer(Player):
         elif not isMax:
             best_score = float("inf")
             for move in possible_moves:
-                board[move[1]][move[0]]=self.role
+                board[move[1]][move[0]]=self.enemy.role
                 score = self.minimax(board,depth + 1,alpha,beta,True,max_depth)
                 board[move[1]][move[0]] = "_"
                 if isinstance(score,tuple) and score[1]=="aborted":
@@ -225,8 +214,12 @@ class Computer(Player):
         corner2_cell =self.board_rep[size-1][0]
         corner3_cell =self.board_rep[0][size-1]
         corner4_cell=self.board_rep[size-1][size-1]
-
-        if corner1_cell =="_" and corner4_cell == self.enemy:
+        if self.game.size%2==0: #even board so target4 cells in the corner
+            for i in range(half_size-1,half_size+1):
+                for j in range(half_size-1,half_size+1):
+                    if self.board_rep[i][j]=="_":
+                        return j,i
+        elif corner1_cell =="_" and corner4_cell == self.enemy:
             return 0,0
         elif corner2_cell =="_" and corner3_cell ==self.enemy:
             return 0,size-1
@@ -255,11 +248,7 @@ class Computer(Player):
             return size-1,size-1
         elif center_cell=="_": 
             return half_size,half_size
-        elif self.game.size%2==0: #even board so target4 cells in the corner
-            for i in range(half_size-1,half_size+1):
-                for j in range(half_size-1,half_size+1):
-                    if self.board_rep[i][j]=="_":
-                        return j,i
+        
                
     def move_process(self,enemy_move=""):
         start_time = time.perf_counter()
