@@ -4,9 +4,9 @@ from Cell import Cell
 import sys
 import tkinter
 class View:
-    root = Tk()
-
+    root = Tk() 
     def __init__(self):
+
         self.root.configure(bg='#1A1825')
         self.root.geometry('500x510')
         self.root.title("Tic-Tac-Toe")
@@ -70,4 +70,6 @@ class View:
         self.game_frame.place_forget()
         self.header_frame.place_forget()
         self.menu()
-v=View()
+        
+if __name__ =="__main__":
+    v=View()
